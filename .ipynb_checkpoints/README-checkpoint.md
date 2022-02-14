@@ -1,4 +1,4 @@
-## Democratize Documentation Summarization in Media and Entertainment with Hugging Face Transformers on Amazon SageMaker
+## Bring your own data to classify news with Amazon SageMaker and Hugging Face
 
 In this [example notebook](./deploy_hf_pipeline.ipynb), we'll go through an example of deploying a document summarization model from [HuggingFace Hub](https://huggingface.co/models). This model will take as input a long text document and will output a concise summary. We will deploy this model on an [asynchronous endpoint](https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference.html) as most summarization use case do not require low latency making the asynchronous endpoint the ideal choice. 
 

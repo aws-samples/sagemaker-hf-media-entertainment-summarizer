@@ -1,0 +1,37 @@
+Natural language processing (NLP) has been a hot topic in the AI field for some time. As current NLP models get larger and larger, data scientists and developers struggle to set up the infrastructure for such growth of model size. For faster training time, distributed training across multiple machines is a natural choice for developers. However, distributed training comes with extra node communication overhead, which negatively impacts the efficiency of model training.
+
+This post shows how to pretrain an NLP model (ALBERT) on Amazon SageMaker by using Hugging Face Deep Learning Container (DLC) and transformers library. We also demonstrate how a SageMaker distributed data parallel (SMDDP) library can provide up to a 35% faster training time compared with PyTorch’s distributed data parallel (DDP) library.
+SageMaker and Hugging Face
+
+SageMaker is a cloud machine learning (ML) platform from AWS. It helps data scientists and developers prepare, build, train, and deploy high-quality ML models by bringing together a broad set of capabilities purpose-built for ML.
+
+Hugging Face’s transformers library is the most popular open-source library for innovative NLP and computer vision. It provides thousands of pretrained models to perform tasks on texts such as classification, information extraction, question answering, summarization, translation, and text generation in over 100 languages.
+
+AWS and Hugging Face collaborated to create an Amazon SageMaker Hugging Face DLC for training and inference. With SageMaker, you can scale training from a small cluster to a large one without the need to manage the infrastructure on your own. With the help of the SageMaker enhancement libraries and AWS Deep Learning Containers, we can significantly speed up NLP model training.
+Solution overview
+
+In this section, we discuss the various components to set up our model training.
+ALBERT model
+
+ALBERT, released in 2019, is an optimized version of BERT. ALBERT-large uses 18 times fewer parameters in size and is 1.7 times faster in training speed than BERT-large. For more details, refer to the original paper, ALBERT: A Lite BERT for Self-supervised Learning of Language Representations.
+
+Also compared with BERT, two parameter reduction operations were applied:
+
+    Factorized embedding parameterization – Decomposes large vocabulary embedding into two smaller ones, which helps grow the hidden layer number
+    Cross-layer parameter sharing – Shares all parameters across layers, which helps reduce the total parameter size by 18 times
+
+Pretrain task
+
+In this post, we train the ALBERT-base model (11 million parameters) using the most commonly used task in NLP pretraining: masked language modeling (MLM). MLM replaces input tokens with mask tokens randomly and trains the model to predict the masked ones. To simplify the training procedure, we removed the sentence order prediction task and kept the MLM task.
+Set up the number of training steps and global batch sizes at different scales
+
+To make a fair comparison across different training scales (namely, different numbers of nodes), we train by using different numbers of nodes but the same number of examples. For example, if we set a single GPU batch size to 16:
+
+    Two nodes (16 GPUs) training run 2,500 steps with global batch size 256
+    Four nodes (32 GPUs) training run 1,250 steps with global batch size 512
+
+Dataset
+
+As in the original ALBERT paper, the dataset we used for the ALBERT pretraining is the English Wikipedia Dataset and Book Corpus. This collection is taken from English-language Wikipedia and more than 11,000 English-language books. After being preprocessed and tokenized from the text, the total dataset size is around 75 GB and stored in an Amazon Simple Storage Service (Amazon S3) bucket.
+
+In practice, we used the Amazon S3 plugin to stream the data. The S3 plugin is a high-performance PyTorch dataset library that can directly and efficiently access datasets stored in S3 buckets.

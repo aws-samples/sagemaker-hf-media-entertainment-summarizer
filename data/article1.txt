@@ -1,0 +1,21 @@
+Hugging Face is the technology startup, with an active open-source community, that drove the worldwide adoption of transformer-based models thanks to its eponymous Transformers library. Earlier this year, Hugging Face and AWS collaborated to enable you to train and deploy over 10,000 pre-trained models on Amazon SageMaker. For more information on training Hugging Face models at scale on SageMaker, refer to AWS and Hugging Face collaborate to simplify and accelerate adoption of Natural Language Processing models and the sample notebooks.
+
+In this post, we discuss different methods to create a SageMaker endpoint for a Hugging Face model.
+Overview
+
+If you’re unfamiliar with transformer-based models and their place in the natural language processing (NLP) landscape, here is an overview. A lot of use cases in NLP can be modeled as supervised learning tasks. The classic supervised learning scenario is based on learning in isolation, where a model is trained on a specific dataset for a specific task. Any change in the dataset or task requires training a new model. This scenario becomes challenging in the absence of sufficient labeled data to train a task-specific model.
+
+Transfer learning alleviates this challenge by first pre-training—using vast amounts of data to build knowledge in an unsupervised manner—and then fine-tuning, namely transferring that knowledge, supplemented by a labeled dataset, to adapt to a downstream task. Although transfer learning has been a part of NLP over the past decade, the field had a major breakthrough in 2017 with the transformer architecture (Attention is all you Need) proposed by Vaswani et al. Since then, adaptations of the transformer architecture in models such as BERT, RoBERTa, GPT-2, and DistilBERT have pushed the boundaries for state-of-the-art NLP models on a wide range of tasks, such as text classification, question answering, summarization, and text generation. Hugging Face enables you to develop NLP applications for such tasks without the need to train state-of-the-art transformer models from scratch, which could be expensive in terms of computation, cost, and time.
+
+The Hugging Face Deep Learning Containers (DLCs) make it easier not only to train Hugging Face transformer models on SageMaker, but also deploy them, thereby making the management of inference infrastructure easier. The Hugging Face Inference Toolkit for SageMaker is an open-source library for serving Hugging Face Transformers models on SageMaker. It utilizes the SageMaker Inference Toolkit for starting up the model server, which is responsible for handling inference requests.
+
+You can deploy models with Hugging Face DLCs on SageMaker the following ways:
+
+    A fully managed method to deploy the model to a SageMaker endpoint without the need for writing any custom inference functions. These models could either be:
+        Fine-tuned models based on your use case
+        Pre-trained models from the Hugging Face Hub
+    A module that provides more customization through an inference script and allows you to override the default methods of the HuggingFaceHandlerService. This module consists of a model_fn() to override the default method for loading the model. After the model is loaded, predictions are obtained by either implementing a transform_fn() or by implementing input_fn(), predict_fn(), or output_fn() to override the default preprocessing, prediction, and post-processing methods, respectively.
+
+One of the benefits of using the Hugging Face SDK is that it handles inference containers on your behalf and you don’t need to manage Docker files or Docker registries. For more information, refer to Deep Learning Containers Images.
+
+In the following sections, we walk through the three methods to deploy endpoints.
