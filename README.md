@@ -6,7 +6,7 @@ Below is a sample architecture for an asynchronous document summarization servic
 
 ![](./img/arch.png)
 
-We will rely on the library of pre-trained models available in the Hugging Face Model Hub. We will demonstrate how you can download a pre-trained model and deploy it on an asynchronous endpoint. Specifically, we'll cover
+We will rely on the library of pre-trained models available in the Hugging Face Model Hub. We will demonstrate how you can download a pre-trained model and deploy it on an asynchronous endpoint. Specifically, we'll cover:
 
 * Downloading a pre-trained model from Hugging Face Model Hub
 * Packaging the model with a customer inference script
